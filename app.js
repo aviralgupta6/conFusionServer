@@ -16,12 +16,17 @@ const Dishes = require('./models/dishes');
 const Leaders = require('./models/leaders');
 const Promotions = require('./models/promotions');
 
-const url = 'mongodb://localhost:27017/conFusion';
-const connect = mongoose.connect(url);
+//const url = 'mongodb://localhost:27017/conFusion';
+//const connect = mongoose.connect(url);
 
-connect.then((db) => {
-    console.log("Connected correctly to server");
-}, (err) => { console.log(err); });
+//const url = "mongodb+srv://aviralgupta:aviral@cluster0-0f7ws.mongodb.net/confusion?retryWrites=true&w=majority";
+//const connect = mongoose.connect(url);
+
+const connection = "mongodb+srv://aviralgupta:aviral@cluster0-0f7ws.mongodb.net/confusion?retryWrites=true&w=majority";
+mongoose.connect(connection,{ useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
+    .then(() => console.log("Database Connected Successfully"))
+    .catch(err => console.log(err));
+
 
 
 var app = express();
