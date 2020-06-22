@@ -24,7 +24,7 @@ const Feedbacks = require('./models/feedback')
 //const url = "mongodb+srv://aviralgupta:aviral@cluster0-0f7ws.mongodb.net/confusion?retryWrites=true&w=majority";
 //const connect = mongoose.connect(url);
 
-const connection = "mongodb+srv://aviralgupta:aviral@cluster0-0f7ws.mongodb.net/confusion?retryWrites=true&w=majority";
+connection = "mongodb+srv://aviralgupta:aviral@cluster0-0f7ws.mongodb.net/confusion?retryWrites=true&w=majority";
 mongoose.connect(connection,{ useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
     .then(() => console.log("Database Connected Successfully"))
     .catch(err => console.log(err));
@@ -41,6 +41,30 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+function auth(req,res,next){
+  console.log(req.headers);
+  var authHeader=req.headers.authorization;
+  if(!authHeader){
+    var err =new Error('You are not authenticate');
+    res.setHeader('WWW-Authenticate','Basic');
+    err.status=401;
+    return next(err);
+  }
+  var auth= new Buffer(authHeader.split(' ')[1],'base64').toString().split(":");
+  var username=auth[0];
+  var password=auth[1];
+  if(username==='admin' && password==='password'){
+    next();
+  }
+  else{
+    var err =new Error('You are not authenticate');
+    res.setHeader('WWW-Authenticate','Basic');
+    err.status=401;
+    return next(err);
+  }
+}
+
+app.use(auth);
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
